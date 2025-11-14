@@ -5,42 +5,135 @@
 @layer base {
   :root {
     --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-geist: 'Geist', system-ui, sans-serif;
-    --font-geist-mono: 'Geist Mono', monospace;
-    --font-mona: 'Mona Sans', system-ui, sans-serif;
-    --font-ibm-plex: 'IBM Plex Sans', system-ui, sans-serif;
-    --font-manrope: 'Manrope', system-ui, sans-serif;
   }
-
-  html {
-    font-family: var(--font-sans);
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  body {
-    @apply antialiased;
-  }
+  html { font-family: var(--font-sans); font-feature-settings: "rlig" 1, "calt" 1; }
+  body { @apply antialiased bg-black; }
 }
 
-/* Custom utility classes for shadcn/ui patterns */
-@layer utilities {
-  .animate-in {
-    animation-name: animateIn;
-    animation-duration: 350ms;
-    --tw-enter-opacity: initial;
-    --tw-enter-scale: initial;
-    --tw-enter-rotate: initial;
-    --tw-enter-translate-x: initial;
-    --tw-enter-translate-y: initial;
-  }
-
-  .animate-out {
-    animation-name: animateOut;
-    animation-duration: 350ms;
-    --tw-exit-opacity: initial;
-    --tw-exit-scale: initial;
-    --tw-exit-rotate: initial;
-    --tw-exit-translate-x: initial;
-    --tw-exit-translate-y: initial;
-  }
+/* Chakra glow text */
+.chakra-glow {
+  text-shadow:
+    0 0 6px rgba(56,189,248,0.75),
+    0 0 16px rgba(59,130,246,0.55),
+    0 0 28px rgba(14,165,233,0.45);
 }
+
+/* Moving clouds background */
+.clouds {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 0 25%, transparent 26%),
+    radial-gradient(circle at 60% 20%, rgba(255,255,255,0.06) 0 22%, transparent 23%),
+    radial-gradient(circle at 80% 60%, rgba(255,255,255,0.08) 0 26%, transparent 27%),
+    linear-gradient(to bottom, #0b1220, #030712 60%);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.05));
+  animation: drift 60s linear infinite;
+}
+
+@keyframes drift { from { background-position: 0 0, 0 0, 0 0, 0 0; } to { background-position: 2000px 0, -1500px 0, 1200px 0, 0 0; } }
+
+/* Falling leaves (five variants reused) */
+.leaf {
+  position: absolute;
+  top: -40px;
+  width: 16px; height: 10px;
+  background: linear-gradient(90deg, #84cc16, #22c55e);
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 0 8px rgba(34,197,94,0.5);
+  transform: rotate(30deg);
+  animation: fall 12s linear infinite, sway 3.2s ease-in-out infinite;
+  opacity: 0.7;
+}
+.leaf-1 { filter: hue-rotate(0deg); }
+.leaf-2 { filter: hue-rotate(20deg); }
+.leaf-3 { filter: hue-rotate(40deg); }
+.leaf-4 { filter: hue-rotate(60deg); }
+.leaf-5 { filter: hue-rotate(80deg); }
+@keyframes fall { 0% { transform: translateY(-60px) rotate(0deg); opacity: 0; } 10% { opacity: 0.9; } 100% { transform: translateY(120vh) rotate(540deg); opacity: 0; } }
+@keyframes sway { 0%,100% { margin-left: -20px; } 50% { margin-left: 20px; } }
+
+/* Occasional lightning / chakra flashes */
+.lightning-maybe {
+  background: radial-gradient(circle at 70% 10%, rgba(125,211,252,0.12), transparent 45%),
+              radial-gradient(circle at 20% 30%, rgba(56,189,248,0.08), transparent 40%);
+  animation: lightning 8s ease-in-out infinite;
+}
+@keyframes lightning { 0%, 3%, 100% { opacity: 0; } 1% { opacity: 1; } 2% { opacity: 0.2; } }
+
+/* Cursor chakra trail dots */
+.chakra-dot {
+  position: absolute;
+  width: 10px; height: 10px;
+  margin-left: -5px; margin-top: -5px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #67e8f9 0%, #38bdf8 40%, rgba(56,189,248,0) 70%);
+  box-shadow: 0 0 12px rgba(56,189,248,0.9), 0 0 28px rgba(59,130,246,0.6);
+  pointer-events: none;
+}
+
+/* Spinning shuriken */
+.shuriken {
+  --size: 40px;
+  width: var(--size); height: var(--size);
+  position: relative;
+  filter: drop-shadow(0 0 6px rgba(148,163,184,0.6));
+}
+.shuriken::before, .shuriken::after {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    conic-gradient(from 45deg, transparent 0 24%, #94a3b8 25% 26%, transparent 27% 49%, #94a3b8 50% 51%, transparent 52% 74%, #94a3b8 75% 76%, transparent 77%);
+  -webkit-mask: radial-gradient(circle, transparent 34%, black 35%);
+          mask: radial-gradient(circle, transparent 34%, black 35%);
+  border-radius: 9999px;
+  animation: spin 4s linear infinite;
+}
+.shuriken::after { filter: brightness(1.2) saturate(1.2); animation-duration: 2.2s; }
+.shuriken-lg { --size: 64px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Buttons */
+.btn-shuriken {
+  @apply relative overflow-hidden px-6 py-3 rounded-full font-semibold text-white bg-slate-900/70 border border-white/10 shadow-lg transition;
+}
+.btn-shuriken::before { content: ""; position: absolute; inset: -40%; background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 60%); transform: translateX(-120%);
+  animation: sweep 4s ease-in-out infinite; }
+.btn-shuriken:hover { @apply bg-slate-800; }
+@keyframes sweep { 0%, 70% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+
+.btn-chakra { @apply px-6 py-3 rounded-full font-semibold text-sky-200 bg-gradient-to-r from-sky-600/60 to-blue-700/60 border border-sky-300/20 shadow-[0_0_20px_rgba(56,189,248,0.25)] hover:from-sky-600/70 hover:to-blue-700/70 transition; }
+
+/* Ninja scroll */
+.ninja-scroll {
+  @apply relative mx-auto w-full bg-amber-900/40 border border-amber-400/30 rounded-xl text-amber-50 overflow-hidden px-6;
+  backdrop-filter: blur(2px);
+}
+.scroll-ends {
+  position: relative; height: 24px; width: 100%; margin: 0 auto; z-index: 1;
+}
+.scroll-ends::before, .scroll-ends::after {
+  content: ""; position: absolute; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 9999px;
+  background: radial-gradient(circle, #f59e0b 0%, #b45309 70%);
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.4), 0 0 10px rgba(245,158,11,0.4);
+}
+.scroll-ends::before { left: -6px; }
+.scroll-ends::after { right: -6px; }
+.scroll-ends.bottom { transform: rotate(180deg); }
+
+/* Subtle grid */
+.bg-grid-slate-700\/20 {
+  background-image: linear-gradient(to right, rgba(51,65,85,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(51,65,85,0.2) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Clone figure */
+.clone { width: 28px; height: 48px; border-radius: 8px; background: linear-gradient(#22d3ee, #0ea5e9);
+  box-shadow: 0 0 20px rgba(14,165,233,0.8), 0 0 40px rgba(34,211,238,0.6); animation: puff 1.2s ease-in-out infinite; }
+@keyframes puff { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.06); } }
+
+/* Marquee */
+.marquee { white-space: nowrap; overflow: hidden; position: relative; }
+.marquee > span { display: inline-block; padding-left: 100%; animation: marquee 24s linear infinite; }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
